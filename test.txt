@@ -1,0 +1,10 @@
+width=20
+height=14
+
+entry=0, 0
+
+exit=19,14
+output_file=maze.txt
+
+pe
+
