@@ -1,9 +1,9 @@
-width=20
-height=14
+width=10
+height=5
 
 entry=0, 0
 
-exit=19,14
+exit=8,4
 output_file=maze.txt
 
 perfect=True
