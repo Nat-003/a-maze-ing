@@ -1,6 +1,7 @@
 from config_parser import parse_config
 from output import write_output
 from maze_generator import MazeGenerator
+from solver import solve
 import sys
 
 
@@ -20,7 +21,8 @@ def main() -> None:
             mg = MazeGenerator(width, height, start_x, start_y, seed)
             mg.generate()
             grid = mg.grid
-            write_output(grid, entry, exit_point, "test", output_file)
+            path = solve(grid, entry, exit_point)
+            write_output(grid, entry, exit_point, path, output_file)
         except ValueError as e:
             print(f"{e}")
     else:
