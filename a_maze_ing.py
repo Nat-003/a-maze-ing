@@ -1,6 +1,6 @@
 from config_parser import parse_config
 from output import write_output
-from maze_generator import generate_maze
+from maze_generator import MazeGenerator
 import sys
 
 
@@ -10,25 +10,21 @@ def main() -> None:
             config = parse_config(sys.argv[1])
             if not config:
                 return
-            for key, value in config.items():
-                if key == "WIDTH":
-                    width = value
-                elif key == "HEIGHT":
-                    height = value
-                elif key == "ENTRY":
-                    entry = value
-                elif key == "EXIT":
-                    exit_point = value
-                elif key == "OUTPUT_FILE":
-                    output_file = value
-
+            width = config["WIDTH"]
+            height = config["HEIGHT"]
+            entry = config["ENTRY"]
+            exit_point = config["EXIT"]
+            output_file = config["OUTPUT_FILE"]
             start_x, start_y = entry
-            grid = generate_maze(width, height, start_x, start_y)
+            seed = config.get("SEED")
+            mg = MazeGenerator(width, height, start_x, start_y, seed)
+            mg.generate()
+            grid = mg.grid
             write_output(grid, entry, exit_point, "test", output_file)
         except ValueError as e:
             print(f"{e}")
     else:
-        print("Please provide a file path to constrcut the maze")
+        print("Please provide a file path to construct the maze")
 
 
 if __name__ == "__main__":

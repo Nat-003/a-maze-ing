@@ -13,7 +13,6 @@ def parse_config(filepath: str) -> dict:
                     continue
                 key, value = clean_line.split('=', 1)
                 config.update({key: value})
-                # print(value)
             upper_config = key_capitalize(config)
         for key in MANDATORY_KEYS:
             if key not in upper_config:
@@ -47,12 +46,10 @@ def convert_value(filepath: str) -> dict:
                 config[key] = new_value
             elif key == "PERFECT":
                 config[key] = (value == "True")
+
     except ValueError as e:
         print(f"{e}")
     return config
 
 
-try:
-    convert_value("test.txt")
-except ValueError as e:
-    print(f"{e}")
+

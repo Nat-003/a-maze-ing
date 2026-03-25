@@ -11,9 +11,11 @@ def get_key(filepath: str) -> dict:
                 clean_line = line.strip()
                 if not clean_line or clean_line.startswith('#'):
                     continue
-                key, value = clean_line.split('=', 1)
+                tmp = clean_line.split('=', 1)
+                if len(tmp) == 1:
+                    continue
+                key, value = tmp
                 config.update({key: value})
-                # print(value)
             upper_config = key_capitalize(config)
         for key in MANDATORY_KEYS:
             if key not in upper_config:
@@ -47,8 +49,13 @@ def parse_config(filepath: str) -> dict:
                 config[key] = new_value
             elif key == "PERFECT":
                 config[key] = (value == "True")
+            elif key == "SEED":
+                try:
+                    config[key] = int(value)
+                except ValueError as e:
+                    config[key] = None
+                    print(f"Warning invalid SEED entered, using random seed")
+
     except ValueError as e:
         print(f"{e}")
     return config
-
-
