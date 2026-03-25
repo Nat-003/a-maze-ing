@@ -7,9 +7,9 @@ def render_maze(height, width, grid) -> None:
                 cell_x = char_x // 2
                 cell_y = char_y // 2
                 if cell_y >= height or (grid[cell_y][cell_x] & 1):
-                    print('█', end='')
+                    print('██', end='')
                 else:
-                    print(' ', end='')
+                    print('  ', end='')
             elif char_x % 2 == 0 and char_y % 2 != 0:  # vertical wall
                 cell_x = char_x // 2
                 cell_y = char_y // 2
@@ -18,5 +18,5 @@ def render_maze(height, width, grid) -> None:
                 else:
                     print(' ', end='')
             else:  # interior
-                print(' ', end='')
+                print('  ', end='')
         print()  # newline at end of each row
