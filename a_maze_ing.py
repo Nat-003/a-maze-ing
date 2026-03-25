@@ -2,6 +2,7 @@ from config_parser import parse_config
 from output import write_output
 from maze_generator import MazeGenerator
 from solver import solve
+from render import render_maze
 import sys
 
 
@@ -23,6 +24,7 @@ def main() -> None:
             grid = mg.grid
             path = solve(grid, entry, exit_point)
             write_output(grid, entry, exit_point, path, output_file)
+            render_maze(height, width, grid)
         except ValueError as e:
             print(f"{e}")
     else:
