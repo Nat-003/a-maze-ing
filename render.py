@@ -1,10 +1,11 @@
-def render_maze(height, width, grid, entry, exit_point) -> None:
+def render_maze(height, width, grid, entry, exit_point, path_cells=[]) -> None:
     entry_x, entry_y = entry
     exit_x, exit_y = exit_point
     WALL = "\033[37m"
     ENTRY = "\033[45m"   # magenta BACKGROUND
     EXIT = "\033[41m"   # red BACKGROUND
     RESET = "\033[0m"
+    PATH = "\033[43m"   # yellow background
     for char_y in range(height * 2 + 1):
         for char_x in range(width * 2 + 1):
             cell_x = char_x // 2
@@ -26,6 +27,8 @@ def render_maze(height, width, grid, entry, exit_point) -> None:
                     print(f"{ENTRY}  {RESET}", end='')  # use EE to see it
                 elif exit_x == cell_x and exit_y == cell_y:
                     print(f"{EXIT}  {RESET}", end='')   # use XX to see it
+                elif (cell_x, cell_y) in path_cells:
+                    print(f"{PATH}  {RESET}", end='')
                 else:
                     print('  ', end='')
         print()  # newline at end of each row

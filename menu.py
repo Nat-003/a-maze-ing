@@ -1,11 +1,14 @@
 from render import render_maze
 from output import write_output
-from solver import solve
+from solver import solve, path_to_cells
 
 
 def ui_menu(mg: object, height, width, entry, exit_point, output_file) -> None:
     grid = mg.grid
-    render_maze(height, width, grid, entry, exit_point)
+    cell = []
+    path = solve(grid, entry, exit_point)
+    render_maze(height, width, grid, entry, exit_point, cell)
+    show_path = False
     while True:
         print("1. Re-generate a new maze")
         print("2. Show/Hide path from entry to exit")
@@ -16,12 +19,19 @@ def ui_menu(mg: object, height, width, entry, exit_point, output_file) -> None:
             user_choice = int(choice)
             if user_choice == 1:
                 mg.generate()
-                grid = mg.grid 
+                grid = mg.grid
+                show_path = False  # ← reset toggle
+                cell = []          # ← clear path cells
                 path = solve(grid, entry, exit_point)
                 write_output(grid, entry, exit_point, path, output_file)
-                render_maze(height, width, grid, entry, exit_point)
+                render_maze(height, width, grid, entry, exit_point, cell)
             elif user_choice == 2:
-                print("Showing path")
+                show_path = not show_path
+                if show_path:
+                    cell = path_to_cells(path, entry)
+                else:
+                    cell = []
+                render_maze(height, width, grid, entry, exit_point, cell)
             elif user_choice == 3:
                 print("changing color ")
             elif user_choice == 4:
