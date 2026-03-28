@@ -1,22 +1,31 @@
-def render_maze(height, width, grid) -> None:
+def render_maze(height, width, grid, entry, exit_point) -> None:
+    entry_x, entry_y = entry
+    exit_x, exit_y = exit_point
+    WALL = "\033[37m"
+    ENTRY = "\033[45m"   # magenta BACKGROUND
+    EXIT = "\033[41m"   # red BACKGROUND
+    RESET = "\033[0m"
     for char_y in range(height * 2 + 1):
-        for char_x in range(width* 2 + 1):
+        for char_x in range(width * 2 + 1):
+            cell_x = char_x // 2
+            cell_y = char_y // 2
             if char_x % 2 == 0 and char_y % 2 == 0:
-                print('█', end='')
-            elif char_x % 2 != 0 and char_y % 2 == 0 :  # horizontal wall
-                cell_x = char_x // 2
-                cell_y = char_y // 2
+                print(f'{WALL}█{RESET}', end='')
+            elif char_x % 2 != 0 and char_y % 2 == 0:  # horizontal wall
                 if cell_y >= height or (grid[cell_y][cell_x] & 1):
-                    print('██', end='')
+                    print(f'{WALL}██{RESET}', end='')
                 else:
                     print('  ', end='')
             elif char_x % 2 == 0 and char_y % 2 != 0:  # vertical wall
-                cell_x = char_x // 2
-                cell_y = char_y // 2
                 if cell_x >= width or (grid[cell_y][cell_x] & 8):
-                    print('█', end='')
+                    print(f'{WALL}█{RESET}', end='')
                 else:
                     print(' ', end='')
             else:  # interior
-                print('  ', end='')
+                if entry_x == cell_x and entry_y == cell_y:
+                    print(f"{ENTRY}  {RESET}", end='')  # use EE to see it
+                elif exit_x == cell_x and exit_y == cell_y:
+                    print(f"{EXIT}  {RESET}", end='')   # use XX to see it
+                else:
+                    print('  ', end='')
         print()  # newline at end of each row

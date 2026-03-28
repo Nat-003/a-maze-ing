@@ -29,7 +29,6 @@ class MazeGenerator:
             else:
                 stack.pop()
 
-       
     def _get_unvisited_neighbors(self, cx, cy, visited):
         neighbors = []
 
@@ -41,7 +40,6 @@ class MazeGenerator:
                     neighbors.append((nx, ny))
 
         return neighbors
-    
 
     def _carve_passage(self, cx, cy, nx, ny):
         dx = nx - cx
