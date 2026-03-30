@@ -1,7 +1,8 @@
-def render_maze(height, width, grid, entry, exit_point, path_cells=[]) -> None:
+def render_maze(height, width, grid, entry, exit_point, path_cells, wall_color="\033[37m") -> None:
+    if path_cells is None:
+        path_cells = []
     entry_x, entry_y = entry
     exit_x, exit_y = exit_point
-    WALL = "\033[37m"
     ENTRY = "\033[45m"   # magenta BACKGROUND
     EXIT = "\033[41m"   # red BACKGROUND
     RESET = "\033[0m"
@@ -11,15 +12,15 @@ def render_maze(height, width, grid, entry, exit_point, path_cells=[]) -> None:
             cell_x = char_x // 2
             cell_y = char_y // 2
             if char_x % 2 == 0 and char_y % 2 == 0:
-                print(f'{WALL}█{RESET}', end='')
+                print(f'{wall_color}█{RESET}', end='')
             elif char_x % 2 != 0 and char_y % 2 == 0:  # horizontal wall
                 if cell_y >= height or (grid[cell_y][cell_x] & 1):
-                    print(f'{WALL}██{RESET}', end='')
+                    print(f'{wall_color}██{RESET}', end='')
                 else:
                     print('  ', end='')
             elif char_x % 2 == 0 and char_y % 2 != 0:  # vertical wall
                 if cell_x >= width or (grid[cell_y][cell_x] & 8):
-                    print(f'{WALL}█{RESET}', end='')
+                    print(f'{wall_color}█{RESET}', end='')
                 else:
                     print(' ', end='')
             else:  # interior

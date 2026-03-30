@@ -4,11 +4,14 @@ from solver import solve, path_to_cells
 
 
 def ui_menu(mg: object, height, width, entry, exit_point, output_file) -> None:
+    COLORS = ["\033[37m", "\033[32m", "\033[33m", "\033[34m", "\033[36m"]
     grid = mg.grid
     cell = []
     path = solve(grid, entry, exit_point)
     render_maze(height, width, grid, entry, exit_point, cell)
     show_path = False
+    color_index = 0
+    wall_color = COLORS[color_index]
     while True:
         print("1. Re-generate a new maze")
         print("2. Show/Hide path from entry to exit")
@@ -24,20 +27,29 @@ def ui_menu(mg: object, height, width, entry, exit_point, output_file) -> None:
                 cell = []          # ← clear path cells
                 path = solve(grid, entry, exit_point)
                 write_output(grid, entry, exit_point, path, output_file)
-                render_maze(height, width, grid, entry, exit_point, cell)
+                print("\033c", end="")
+                render_maze(height, width, grid, entry, exit_point, cell, wall_color)
             elif user_choice == 2:
                 show_path = not show_path
                 if show_path:
                     cell = path_to_cells(path, entry)
                 else:
                     cell = []
-                render_maze(height, width, grid, entry, exit_point, cell)
+                print("\033c", end="")
+                render_maze(height, width, grid, entry, exit_point, cell, wall_color)
             elif user_choice == 3:
-                print("changing color ")
+                color_index = (color_index + 1) % len(COLORS)
+                wall_color = COLORS[color_index]
+                print("\033c", end="")
+                render_maze(height, width, grid, entry, exit_point, cell, wall_color)
             elif user_choice == 4:
                 print("Exiting...")
                 break
             else:
+                print("\033c", end="")
+                render_maze(height, width, grid, entry, exit_point, cell, wall_color)
                 print("Invalid choice, only number between 1-4 accepted")
         except ValueError:
+            print("\033c", end="")
+            render_maze(height, width, grid, entry, exit_point, cell, wall_color)
             print("Please enter a number between 1 and 4")
