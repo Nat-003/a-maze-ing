@@ -39,23 +39,40 @@ def parse_config(filepath: str) -> dict:
         config = get_key(filepath)
         for key, value in config.items():
             if key in ("WIDTH", "HEIGHT"):
-                new_value = int(value)
-                config[key] = new_value
+                try:
+                    new_value = int(value)
+                    config[key] = new_value
+                except ValueError:
+                    print("Error invalid height or entry")
             elif key in ("ENTRY", "EXIT"):
-                new_value = []
-                tmp = value.split(',')
-                for v in tmp:
-                    new_value.append(int(v))
-                config[key] = new_value
+                try:
+                    new_value = []
+                    tmp = value.split(',')
+                    for v in tmp:
+                        new_value.append(int(v))
+                    config[key] = new_value
+                except ValueError:
+                    print("Error invalid entry/exit_point")
             elif key == "PERFECT":
                 config[key] = (value == "True")
             elif key == "SEED":
                 try:
                     config[key] = int(value)
-                except ValueError as e:
+                except ValueError:
                     config[key] = None
-                    print(f"Warning invalid SEED entered, using random seed")
-
+                    print("Warning invalid SEED entered, using random seed")
+        entry = config["ENTRY"]
+        exit_point = config["EXIT"]
+        width = config["WIDTH"]
+        height = config["HEIGHT"]
+        entry_x, entry_y = entry
+        exit_x, exit_y = exit_point
+        if entry_x < 0 or entry_x >= width or entry_y < 0 or entry_y >= height:
+            print(f"Warning: Entry coordinates({entry_x},{entry_y}) out of bounds for maze ({width},{height}) defaulting to (0,0)")
+            config["ENTRY"] = (0, 0)
+        elif exit_x < 0 or exit_x >= width or exit_y < 0 or exit_y >= height:
+            print(f"Warning: Exit coordinates({exit_x},{exit_y}) out of bounds for maze ({width},{height}) defaulting to ({width-1},{height-1})")
+            config["EXIT"] = (width-1, height-1)       
     except ValueError as e:
         print(f"{e}")
     return config
