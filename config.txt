@@ -1,9 +1,9 @@
-WIDTH=8
-HEIGHT=8
+WIDTH=20
+HEIGHT=15
 ENTRY=0,0
 EXIT=2,20
 OUTPUT_FILE=maze.txt
-PERFECT=True
+PERFECT=false
 
 
 fcadsfadfv

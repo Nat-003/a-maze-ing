@@ -17,9 +17,10 @@ def main() -> None:
             entry = config["ENTRY"]
             exit_point = config["EXIT"]
             output_file = config["OUTPUT_FILE"]
+            perfect = config["PERFECT"]
             start_x, start_y = entry
             seed = config.get("SEED")
-            mg = MazeGenerator(width, height, start_x, start_y, seed)
+            mg = MazeGenerator(width, height, start_x, start_y,perfect, seed)
             mg.generate()
             grid = mg.grid
             path = solve(grid, entry, exit_point)
