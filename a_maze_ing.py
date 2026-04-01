@@ -1,6 +1,6 @@
 from config_parser import parse_config
 from output import write_output
-from maze_generator import MazeGenerator
+from mazegen import MazeGenerator
 from solver import solve
 from menu import ui_menu
 import sys
