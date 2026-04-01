@@ -20,9 +20,9 @@ def get_key(filepath: str) -> dict:
         for key in MANDATORY_KEYS:
             if key not in upper_config:
                 raise ValueError(f"Missing mandatory key: {key}")
-        return upper_config
     except FileNotFoundError as e:
         print(f"Error file {e} does not exist")
+    return upper_config
 
 
 def key_capitalize(config: dict) -> dict:
