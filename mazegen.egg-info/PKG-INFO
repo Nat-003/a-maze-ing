@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: mazegen
+Version: 1.0.0
+Summary: generate a maze given a config file, solving it and displaying the a visual in the terminal
+Requires-Python: >=3.10

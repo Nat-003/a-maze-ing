@@ -43,7 +43,7 @@ def parse_config(filepath: str) -> dict:
                     new_value = int(value)
                     config[key] = new_value
                 except ValueError:
-                    print("Error invalid height or entry")
+                    raise ValueError(f"Error invalid height or width: {value}")
             elif key in ("ENTRY", "EXIT"):
                 try:
                     new_value = []
@@ -52,9 +52,12 @@ def parse_config(filepath: str) -> dict:
                         new_value.append(int(v))
                     config[key] = new_value
                 except ValueError:
-                    print("Error invalid entry/exit_point")
+                    raise ValueError(f"Error invalid entry or exit: {value}")
             elif key == "PERFECT":
-                config[key] = (value == "True")
+                if value == "True" or value == "False":
+                    config[key] = (value == "True")
+                else:
+                    raise ValueError(f"incorrect boolean value {value}")
             elif key == "SEED":
                 try:
                     config[key] = int(value)
@@ -72,7 +75,8 @@ def parse_config(filepath: str) -> dict:
             config["ENTRY"] = (0, 0)
         elif exit_x < 0 or exit_x >= width or exit_y < 0 or exit_y >= height:
             print(f"Warning: Exit coordinates({exit_x},{exit_y}) out of bounds for maze ({width},{height}) defaulting to ({width-1},{height-1})")
-            config["EXIT"] = (width-1, height-1)       
+            config["EXIT"] = (width-1, height-1)
+        return config      
     except ValueError as e:
         print(f"{e}")
-    return config
+  
