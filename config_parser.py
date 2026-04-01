@@ -21,7 +21,7 @@ def get_key(filepath: str) -> dict:
             if key not in upper_config:
                 raise ValueError(f"Missing mandatory key: {key}")
     except FileNotFoundError as e:
-        print(f"Error file {e} does not exist")
+        raise ValueError(f"File not found: {filepath}")
     return upper_config
 
 
