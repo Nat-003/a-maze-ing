@@ -14,8 +14,10 @@ class MazeGenerator:
 
     def generate(self):
         random.seed(self.seed)
-        self.grid = [[15 for _ in range(self.width)] for _ in range(self.height)]
-        visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+        self.grid = [[15 for _ in range(self.width)]
+                     for _ in range(self.height)]
+        visited = [[False for _ in range(self.width)]
+                   for _ in range(self.height)]
 
         stack = [(self.start_x, self.start_y)]
         visited[self.start_y][self.start_x] = True
@@ -30,7 +32,7 @@ class MazeGenerator:
                 stack.append((nx, ny))
             else:
                 stack.pop()
-        if self.perfect == False:
+        if not self.perfect:
             self._add_loops()
 
     def _get_unvisited_neighbors(self, cx, cy, visited):
@@ -62,7 +64,6 @@ class MazeGenerator:
             self.grid[cy][cx] &= ~1
             self.grid[ny][nx] &= ~4
 
-
     def _add_loops(self):
         extra_passages = (self.width * self.height) // 10
         for _ in range(extra_passages):
@@ -70,14 +71,13 @@ class MazeGenerator:
             cx = random.randint(0, self.width - 1)
             cy = random.randint(0, self.height - 1)
             # pick a random direction
-            dx, dy = random.choice([(0,-1),(1,0),(0,1),(-1,0)])
+            dx, dy = random.choice([(0, -1), (1, 0), (0, 1), (-1, 0)])
             nx, ny = cx + dx, cy + dy
             # check bounds
             if 0 <= nx < self.width and 0 <= ny < self.height \
-            and (nx, ny) not in self.pattern_cell \
-            and (cx, cy) not in self.pattern_cell:
+                and (nx, ny) not in self.pattern_cell \
+                    and (cx, cy) not in self.pattern_cell:
                 self._carve_passage(cx, cy, nx, ny)
-
 
     def _pattern(self, visited) -> list:
         cell_pat = []
