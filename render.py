@@ -1,4 +1,5 @@
-def render_maze(height, width, grid, entry, exit_point, path_cells, wall_color="\033[37m", pattern_cells=None) -> None:
+def render_maze(height, width, grid, entry, exit_point, path_cells,
+                wall_color="\033[37m", pattern_cells=None) -> None:
     if path_cells is None:
         path_cells = []
     if pattern_cells is None:

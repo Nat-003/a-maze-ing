@@ -26,9 +26,9 @@ def solve(grid, entry, exit_point):
                     solution_path.append('N')
                 current = previous
             break
-        for dx, dy, wall in [(0,-1,1),(1, 0, 2),(0, 1, 4),(-1,0,8)]:
+        for dx, dy, wall in [(0, -1, 1), (1, 0, 2), (0, 1, 4), (-1, 0, 8)]:
             nx, ny = cx + dx, cy + dy
-            if  0 <= nx < len(grid[0]) and 0 <= ny < len(grid):  # bounds
+            if 0 <= nx < len(grid[0]) and 0 <= ny < len(grid):  # bounds
                 if (nx, ny) not in came_from:  # not visited
                     if not (grid[cy][cx] & wall):  # wall open
                         came_from[(nx, ny)] = (cx, cy)
