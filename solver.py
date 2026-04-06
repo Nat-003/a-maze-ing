@@ -1,9 +1,13 @@
-def solve(grid, entry, exit_point):
+from typing import LiteralString, Any
+
+
+def solve(grid: list[list[int]], entry: list[int],
+          exit_point: list[int] | Any) -> LiteralString:
     start_x, start_y = entry
     end_x, end_y = exit_point
     queue = [(start_x, start_y)]
     came_from = {(start_x, start_y): None}
-    solution_path = []
+    solution_path: list[Any] = []
     while queue:
         cx, cy = queue.pop(0)
         if cx == end_x and cy == end_y:
@@ -36,7 +40,7 @@ def solve(grid, entry, exit_point):
     return "".join(reversed(solution_path))
 
 
-def path_to_cells(path, entry):
+def path_to_cells(path: LiteralString, entry: Any) -> list[tuple[Any, Any]]:
     cells = [tuple(entry)]  # start with entry cell
     x, y = entry
     for direction in path:
