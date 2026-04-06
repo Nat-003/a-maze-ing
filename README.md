@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by nappasam, rgliga.*
+*This project has been created as part of the 42 curriculum by nappasam, inaciri.*
 
 # A-Maze-ing
 
