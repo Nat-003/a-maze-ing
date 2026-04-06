@@ -20,7 +20,7 @@ def get_key(filepath: str) -> dict:
         for key in MANDATORY_KEYS:
             if key not in upper_config:
                 raise ValueError(f"Missing mandatory key: {key}")
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         raise ValueError(f"File not found: {filepath}")
     return upper_config
 
@@ -71,12 +71,14 @@ def parse_config(filepath: str) -> dict:
         entry_x, entry_y = entry
         exit_x, exit_y = exit_point
         if entry_x < 0 or entry_x >= width or entry_y < 0 or entry_y >= height:
-            print(f"Warning: Entry coordinates({entry_x},{entry_y}) out of bounds for maze ({width},{height}) defaulting to (0,0)")
+            print(f"Warning: Entry coordinates({entry_x},{entry_y}) out of "
+                  f"bounds for maze ({width},{height}) defaulting to (0,0)")
             config["ENTRY"] = (0, 0)
         elif exit_x < 0 or exit_x >= width or exit_y < 0 or exit_y >= height:
-            print(f"Warning: Exit coordinates({exit_x},{exit_y}) out of bounds for maze ({width},{height}) defaulting to ({width-1},{height-1})")
+            print(f"Warning: Exit coordinates({exit_x},{exit_y}) out of bounds"
+                  f" for maze ({width},{height}) defaulting to "
+                  f"({width-1},{height-1})")
             config["EXIT"] = (width-1, height-1)
-        return config      
+        return config
     except ValueError as e:
         print(f"{e}")
-  
