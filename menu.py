@@ -1,6 +1,4 @@
 from render import render_maze
-from output import write_output
-from solver import solve, path_to_cells
 from typing import Any
 from mazegen.maze_generator import MazeGenerator
 
@@ -10,7 +8,7 @@ def ui_menu(mg: MazeGenerator, height: Any, width: Any, entry: Any,
     COLORS = ["\033[37m", "\033[32m", "\033[33m", "\033[34m", "\033[36m"]
     grid = mg.grid
     cell: list[Any] = []
-    path = solve(grid, entry, exit_point)
+    path = mg.solve()
     show_path = False
     color_index = 0
     wall_color = COLORS[color_index]
@@ -29,15 +27,15 @@ def ui_menu(mg: MazeGenerator, height: Any, width: Any, entry: Any,
                 grid = mg.grid
                 show_path = False  # ← reset toggle
                 cell = []          # ← clear path cells
-                path = solve(grid, entry, exit_point)
-                write_output(grid, entry, exit_point, path, output_file)
+                path = mg.solve()
+                mg.write_output(entry, exit_point, path, output_file)
                 print("\033c", end="")
                 render_maze(height, width, grid, entry, exit_point,
                             cell, wall_color, mg.pattern_cell)
             elif user_choice == 2:
                 show_path = not show_path
                 if show_path:
-                    cell = path_to_cells(path, entry)
+                    cell = mg.path_to_cells(path, entry)
                 else:
                     cell = []
                 print("\033c", end="")
