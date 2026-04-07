@@ -6,7 +6,7 @@ def solve(grid: list[list[int]], entry: list[int],
     start_x, start_y = entry
     end_x, end_y = exit_point
     queue = [(start_x, start_y)]
-    came_from = {(start_x, start_y): None}
+    came_from: dict[tuple[int, int], Any] = {(start_x, start_y): None}
     solution_path: list[Any] = []
     while queue:
         cx, cy = queue.pop(0)

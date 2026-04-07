@@ -1,12 +1,15 @@
 from render import render_maze
 from output import write_output
 from solver import solve, path_to_cells
+from typing import Any
+from mazegen.maze_generator import MazeGenerator
 
 
-def ui_menu(mg: object, height, width, entry, exit_point, output_file) -> None:
+def ui_menu(mg: MazeGenerator, height: Any, width: Any, entry: Any,
+            exit_point: Any, output_file: Any) -> None:
     COLORS = ["\033[37m", "\033[32m", "\033[33m", "\033[34m", "\033[36m"]
     grid = mg.grid
-    cell = []
+    cell: list[Any] = []
     path = solve(grid, entry, exit_point)
     show_path = False
     color_index = 0

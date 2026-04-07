@@ -12,7 +12,7 @@ class MazeGenerator:
         self.pattern_cell = []
         self.perfect = perfect
 
-    def generate(self):
+    def generate(self) -> None:
         random.seed(self.seed)
         self.grid = [[15 for _ in range(self.width)]
                      for _ in range(self.height)]

@@ -28,7 +28,7 @@ def get_key(filepath: str) -> dict[str, Any]:
     return upper_config
 
 
-def key_capitalize(config: dict) -> dict[str, Any]:
+def key_capitalize(config: dict[Any, Any]) -> dict[str, Any]:
     new_config = {}
     for key, value in config.items():
         new = str(key).upper()
@@ -43,7 +43,7 @@ def parse_config(filepath: str) -> dict[str, Any]:
         for key, value in config.items():
             if key in ("WIDTH", "HEIGHT"):
                 try:
-                    new_value = int(value)
+                    new_value: Any = int(value)
                     config[key] = new_value
                 except ValueError:
                     raise ValueError(f"Error invalid height or width: {value}")
@@ -52,7 +52,8 @@ def parse_config(filepath: str) -> dict[str, Any]:
                     new_value = []
                     tmp = value.split(',')
                     for v in tmp:
-                        new_value.append(int(v))
+                        casted = int(v)
+                        new_value.append(casted)
                     config[key] = new_value
                 except ValueError:
                     raise ValueError(f"Error invalid entry or exit: {value}")
@@ -85,3 +86,4 @@ def parse_config(filepath: str) -> dict[str, Any]:
         return config
     except ValueError as e:
         print(f"{e}")
+        return config
