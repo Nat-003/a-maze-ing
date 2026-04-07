@@ -1,4 +1,8 @@
-def write_output(grid, entry, exit_point, path, filepath) -> None:
+from typing import Any
+
+
+def write_output(grid: Any, entry: Any, exit_point: Any, path: Any,
+                 filepath: Any) -> None:
     with open(filepath, 'w') as f:
         for row in grid:
             f.write("".join(f"{cell:X}" for cell in row))

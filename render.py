@@ -1,5 +1,10 @@
-def render_maze(height, width, grid, entry, exit_point, path_cells,
-                wall_color="\033[37m", pattern_cells=None) -> None:
+from typing import Any
+
+
+def render_maze(height: Any, width: Any, grid: Any, entry: Any,
+                exit_point: Any, path_cells: Any,
+                wall_color: str = "\033[37m",
+                pattern_cells: Any = None) -> None:
     if path_cells is None:
         path_cells = []
     if pattern_cells is None:

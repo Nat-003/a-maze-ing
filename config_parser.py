@@ -1,8 +1,11 @@
+from typing import Any
+
+
 MANDATORY_KEYS = ['WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE',
                   'PERFECT']
 
 
-def get_key(filepath: str) -> dict:
+def get_key(filepath: str) -> dict[str, Any]:
     config = {}
     upper_config = {}
     try:
@@ -25,7 +28,7 @@ def get_key(filepath: str) -> dict:
     return upper_config
 
 
-def key_capitalize(config: dict) -> dict:
+def key_capitalize(config: dict) -> dict[str, Any]:
     new_config = {}
     for key, value in config.items():
         new = str(key).upper()
@@ -33,7 +36,7 @@ def key_capitalize(config: dict) -> dict:
     return new_config
 
 
-def parse_config(filepath: str) -> dict:
+def parse_config(filepath: str) -> dict[str, Any]:
     config = {}
     try:
         config = get_key(filepath)
