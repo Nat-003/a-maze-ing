@@ -111,8 +111,8 @@ pip install mazegen-1.0.0-py3-none-any.whl
 from mazegen import MazeGenerator
 
 # Create a 20x15 perfect maze starting at (0, 0) with a fixed seed
-mg = MazeGenerator(width=20, height=15, start_x=0, start_y=0, perfect=True, seed=42)
-mg.generate()
+mg = MazeGenerator(sys.argv[1])
+mg.set_config()
 
 # Access the grid — list of lists of integers (hex wall encoding)
 grid = mg.grid
@@ -158,8 +158,8 @@ python -m build
 
 ### Roles
 
-- **nappasam** — maze generator (`maze_generator.py`), solver (`solver.py`), output writer (`output.py`)
-- **inaciri** — config parser (`config_parser.py`), interactive menu (`menu.py`)
+- **nappasam** — maze generator (`maze_generator.py`), solver (`maze_generator.py`), output writer (`maze_generator.py`)
+- **inaciri** — config parser (`maze_generator.py`), interactive menu (`menu.py`)
 
 Both team members helped each other across modules when needed — roles were a guide, not a strict boundary.
 
