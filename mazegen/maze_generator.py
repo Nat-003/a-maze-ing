@@ -150,7 +150,10 @@ class MazeGenerator:
                 if key in ("WIDTH", "HEIGHT"):
                     try:
                         new_value: Any = int(value)
-                        config[key] = new_value
+                        if new_value > 0:
+                            config[key] = new_value
+                        else:
+                            raise ValueError
                     except ValueError:
                         raise ValueError(f"Error invalid height or width: {value}")
                 elif key in ("ENTRY", "EXIT"):
