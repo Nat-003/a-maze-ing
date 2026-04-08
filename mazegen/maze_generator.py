@@ -3,10 +3,23 @@ from typing import Any, LiteralString
 
 
 class MazeGenerator:
+    """Generate a maze using a recursive backtracker (DFS) algorithm.
+
+    This class reads a configuration, generates a perfect or imperfect maze,
+    embeds a '42' pattern, solves it using BFS, and writes the output to a
+    hex-encoded text file.
+    """
+
     MANDATORY_KEYS = ['WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE',
                       'PERFECT']
 
     def __init__(self, file_path: str):
+        """Initialize a new MazeGenerator instance.
+
+        Args:
+            file_path (str): The path to the configuration file
+            (e.g., 'config.txt').
+        """
         self.file_path = file_path
         self.output_file: str = ''
         self.width: int
@@ -21,6 +34,12 @@ class MazeGenerator:
         self.exit_point: list[Any]
 
     def generate(self) -> None:
+        """Generate the maze using the recursive backtracker algorithm.
+
+        Uses an explicit stack to prevent recursion depth limits. Handles the
+        insertion of the '42' pattern and optional loops if the maze is set
+        to be imperfect (PERFECT=False).
+        """
         random.seed(self.seed)
         self.grid = [[15 for _ in range(self.width)]
                      for _ in range(self.height)]
@@ -45,6 +64,16 @@ class MazeGenerator:
 
     def _get_unvisited_neighbors(self, cx: int, cy: int,
                                  visited: list[list[bool]]) -> list[Any]:
+        """Return a list of unvisited neighboring cells.
+
+        Args:
+            cx (int): X coordinate of the current cell.
+            cy (int): Y coordinate of the current cell.
+            visited (list[list[bool]]): Grid tracking visited cells.
+
+        Returns:
+            list[Any]: List of (x, y) tuples for unvisited neighbors.
+        """
         neighbors = []
 
         for dx, dy in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
@@ -57,6 +86,17 @@ class MazeGenerator:
         return neighbors
 
     def _carve_passage(self, cx: int, cy: int, nx: Any, ny: Any) -> None:
+        """Carve a passage between the current cell and a target cell.
+
+        Modifies the 4-bit wall encoding (North=1, East=2, South=4, West=8)
+        to remove walls between the given cells.
+
+        Args:
+            cx (int): X coordinate of the current cell.
+            cy (int): Y coordinate of the current cell.
+            nx (Any): X coordinate of the target cell.
+            ny (Any): Y coordinate of the target cell.
+        """
         dx = nx - cx
         dy = ny - cy
 
@@ -74,6 +114,11 @@ class MazeGenerator:
             self.grid[ny][nx] &= ~4
 
     def _add_loops(self) -> None:
+        """Open random extra passages to create an imperfect maze.
+
+        These extra loops are randomly carved and do not intersect or modify
+        the cells forming the central '42' pattern.
+        """
         extra_passages = (self.width * self.height) // 10
         for _ in range(extra_passages):
             # pick a random cell
@@ -89,6 +134,15 @@ class MazeGenerator:
                 self._carve_passage(cx, cy, nx, ny)
 
     def _pattern(self, visited: list[Any]) -> list[Any]:
+        """Insert the '42' pattern into the center of the maze.
+
+        Args:
+            visited (list[Any]): Grid tracking visited cells
+            (will be modified).
+
+        Returns:
+            list[Any]: List of (x, y) coordinates making up the '42' pattern.
+        """
         cell_pat = []
         PATTERN_42 = [
                         [1, 0, 0, 1, 0, 1, 1, 1],
@@ -115,6 +169,18 @@ class MazeGenerator:
         return cell_pat
 
     def get_key(self, filepath: str) -> dict[str, Any]:
+        """Parse raw key-value pairs from the configuration file.
+
+        Args:
+            filepath (str): The path to the configuration file.
+
+        Raises:
+            ValueError: If a mandatory key is missing or the file is not found.
+
+        Returns:
+            dict[str, Any]: Dictionary containing uppercase keys
+            and string values.
+        """
         config = {}
         upper_config = {}
         try:
@@ -137,6 +203,14 @@ class MazeGenerator:
         return upper_config
 
     def key_capitalize(self, config: dict[Any, Any]) -> dict[str, Any]:
+        """Convert all keys in a configuration dictionary to uppercase.
+
+        Args:
+            config (dict[Any, Any]): The original configuration dictionary.
+
+        Returns:
+            dict[str, Any]: A new dictionary with uppercase keys.
+        """
         new_config = {}
         for key, value in config.items():
             new = str(key).upper()
@@ -144,6 +218,18 @@ class MazeGenerator:
         return new_config
 
     def parse_config(self, filepath: str) -> dict[str, Any] | None:
+        """Validate and format the configuration values.
+
+        Casts values to integers, booleans, or lists as appropriate. Warns and
+        provides defaults for invalid seeds or out-of-bounds coordinates.
+
+        Args:
+            filepath (str): Path to the configuration file.
+
+        Returns:
+            dict[str, Any] | None: Validated configuration dictionary, or None
+                                   if validation fails.
+        """
         config = {}
         try:
             config = self.get_key(filepath)
@@ -207,6 +293,14 @@ class MazeGenerator:
             return None
 
     def set_config(self) -> None:
+        """Apply the parsed configuration and trigger the maze generation.
+
+        Handles boundary and pattern collision checks for the entry and exit
+        points, applying safe defaults if collisions occur.
+
+        Raises:
+            ValueError: If the configuration parsing fails or keys are missing.
+        """
         config = self.parse_config(self.file_path)
         if config is not None:
             try:
@@ -239,6 +333,13 @@ class MazeGenerator:
             raise ValueError
 
     def solve(self) -> LiteralString:
+        """Find the shortest path from entry to exit using a BFS algorithm.
+
+        Returns:
+            LiteralString: The solution path as a string of cardinal directions
+                           (e.g., 'NNESWW'). Returns an empty string if
+                           no path is found.
+        """
         start_x = self.start_x
         start_y = self.start_y
         end_x, end_y = self.exit_point
@@ -278,6 +379,16 @@ class MazeGenerator:
 
     def path_to_cells(self, path: LiteralString,
                       entry: Any) -> list[tuple[Any, Any]]:
+        """Convert a directional path string into a list of cell coordinates.
+
+        Args:
+            path (LiteralString): The directional path string
+            (e.g., 'N', 'S', 'E', 'W').
+            entry (Any): Tuple containing the (x, y) starting coordinates.
+
+        Returns:
+            list[tuple[Any, Any]]: List of (x, y) cells traversed by the path.
+        """
         x = self.start_x
         y = self.start_y
         cells = [(x, y)]  # start with entry cell
@@ -295,6 +406,19 @@ class MazeGenerator:
 
     def write_output(self, entry: Any, exit_point: Any, path: Any,
                      filepath: Any) -> None:
+        """Save the maze grid, entry/exit points, and solution path to a file.
+
+        The grid is saved using a hexadecimal representation for the walls.
+
+        Args:
+            entry (Any): Tuple of entry coordinates.
+            exit_point (Any): Tuple of exit coordinates.
+            path (Any): The solution path string.
+            filepath (Any): The path to the output text file.
+
+        Raises:
+            ValueError: If the file path is invalid or missing.
+        """
         try:
             with open(filepath, 'w') as f:
                 for row in self.grid:
