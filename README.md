@@ -34,10 +34,11 @@ python3 a_maze_ing.py config.txt
 ### Other commands
 
 ```bash
-make debug    # run with Python debugger
-make lint     # run flake8 and mypy
-make clean    # remove cache and build artifacts
-make build    # rebuild the mazegen package from sources
+make debug    		# run with Python debugger
+make lint     		# run flake8 and mypy
+make lint-strict	# run flake8 and mypy --strict
+make clean    		# remove cache and build artifacts
+make build    		# rebuild the mazegen package from sources
 ```
 
 ### Interactive menu
@@ -158,7 +159,7 @@ python -m build
 ### Roles
 
 - **nappasam** — maze generator (`maze_generator.py`), solver (`solver.py`), output writer (`output.py`)
-- **rgliga** — config parser (`config_parser.py`), interactive menu (`menu.py`)
+- **inaciri** — config parser (`config_parser.py`), interactive menu (`menu.py`)
 
 Both team members helped each other across modules when needed — roles were a guide, not a strict boundary.
 
