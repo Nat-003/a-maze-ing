@@ -8,17 +8,17 @@ class MazeGenerator:
 
     def __init__(self, file_path: str):
         self.file_path = file_path
-        self.output_file: str = None
-        self.width: int = None
-        self.height: int = None
-        self.start_x: int = None
-        self.start_y: int = None
-        self.seed: int = None
-        self.entry = None
+        self.output_file: str = ''
+        self.width: int
+        self.height: int
+        self.start_x: int
+        self.start_y: int
+        self.seed: int | None
+        self.entry: tuple[Any, Any]
         self.grid: list[Any] = []
         self.pattern_cell: list[Any] = []
-        self.perfect: bool = None
-        self.exit_point = None
+        self.perfect: bool
+        self.exit_point: list[Any]
 
     def generate(self) -> None:
         random.seed(self.seed)
@@ -43,7 +43,8 @@ class MazeGenerator:
         if not self.perfect:
             self._add_loops()
 
-    def _get_unvisited_neighbors(self, cx, cy, visited):
+    def _get_unvisited_neighbors(self, cx: int, cy: int,
+                                 visited: list[list[bool]]) -> list[Any]:
         neighbors = []
 
         for dx, dy in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
@@ -55,7 +56,7 @@ class MazeGenerator:
 
         return neighbors
 
-    def _carve_passage(self, cx, cy, nx, ny):
+    def _carve_passage(self, cx: int, cy: int, nx: Any, ny: Any) -> None:
         dx = nx - cx
         dy = ny - cy
 
@@ -72,7 +73,7 @@ class MazeGenerator:
             self.grid[cy][cx] &= ~1
             self.grid[ny][nx] &= ~4
 
-    def _add_loops(self):
+    def _add_loops(self) -> None:
         extra_passages = (self.width * self.height) // 10
         for _ in range(extra_passages):
             # pick a random cell
@@ -87,7 +88,7 @@ class MazeGenerator:
                     and (cx, cy) not in self.pattern_cell:
                 self._carve_passage(cx, cy, nx, ny)
 
-    def _pattern(self, visited) -> list:
+    def _pattern(self, visited: list[Any]) -> list[Any]:
         cell_pat = []
         PATTERN_42 = [
                         [1, 0, 0, 1, 0, 1, 1, 1],
@@ -155,7 +156,8 @@ class MazeGenerator:
                         else:
                             raise ValueError
                     except ValueError:
-                        raise ValueError(f"Error invalid height or width: {value}")
+                        raise ValueError("Error invalid height or "
+                                         f"width: {value}")
                 elif key in ("ENTRY", "EXIT"):
                     try:
                         new_value = []
@@ -165,7 +167,8 @@ class MazeGenerator:
                             new_value.append(casted)
                         config[key] = new_value
                     except ValueError:
-                        raise ValueError(f"Error invalid entry or exit: {value}")
+                        raise ValueError("Error invalid entry or "
+                                         f"exit: {value}")
                 elif key == "PERFECT":
                     if value == "True" or value == "False":
                         config[key] = (value == "True")
@@ -176,21 +179,27 @@ class MazeGenerator:
                         config[key] = int(value)
                     except ValueError:
                         config[key] = None
-                        print("Warning invalid SEED entered, using random seed")
+                        print("Warning invalid SEED entered, "
+                              "using random seed")
             entry = config["ENTRY"]
             exit_point = config["EXIT"]
             width = config["WIDTH"]
             height = config["HEIGHT"]
             entry_x, entry_y = entry
             exit_x, exit_y = exit_point
-            if entry_x < 0 or entry_x >= width or entry_y < 0 or entry_y >= height:
-                print(f"Warning: Entry coordinates({entry_x},{entry_y}) out of "
-                    f"bounds for maze ({width},{height}) defaulting to (0,0)")
+            if (entry_x < 0 or entry_x >= width or entry_y < 0
+                    or entry_y >= height):
+                print(f"Warning: Entry coordinates({entry_x},{entry_y}) "
+                      "out of "
+                      f"bounds for maze ({width},{height}) "
+                      "defaulting to (0,0)")
                 config["ENTRY"] = (0, 0)
-            elif exit_x < 0 or exit_x >= width or exit_y < 0 or exit_y >= height:
-                print(f"Warning: Exit coordinates({exit_x},{exit_y}) out of bounds"
-                    f" for maze ({width},{height}) defaulting to "
-                    f"({width-1},{height-1})")
+            elif (exit_x < 0 or exit_x >= width or exit_y < 0
+                  or exit_y >= height):
+                print(f"Warning: Exit coordinates({exit_x},{exit_y}) "
+                      "out of bounds"
+                      f" for maze ({width},{height}) defaulting to "
+                      f"({width-1},{height-1})")
                 config["EXIT"] = (width-1, height-1)
             return config
         except ValueError as e:
@@ -217,12 +226,13 @@ class MazeGenerator:
             self.generate()
             if tuple(self.entry) in self.pattern_cell:
                 print("Warning: entry lands on '42' pattern, "
-                    "defaulting to (0,0)")
+                      "defaulting to (0,0)")
                 self.start_x, self.start_y = (0, 0)
+                self.entry = self.start_x, self.start_y
                 self.generate()
             if tuple(self.exit_point) in self.pattern_cell:
                 print("Warning: exit lands on '42' pattern, "
-                    "defaulting to (width-1, height-1)")
+                      "defaulting to (width-1, height-1)")
                 self.exit_point = [self.width-1, self.height-1]
                 self.generate()
         else:
@@ -259,14 +269,15 @@ class MazeGenerator:
                 break
             for dx, dy, wall in [(0, -1, 1), (1, 0, 2), (0, 1, 4), (-1, 0, 8)]:
                 nx, ny = cx + dx, cy + dy
-                if 0 <= nx < len(self.grid[0]) and 0 <= ny < len(self.grid):  # bounds
+                if 0 <= nx < len(self.grid[0]) and 0 <= ny < len(self.grid):
                     if (nx, ny) not in came_from:  # not visited
                         if not (self.grid[cy][cx] & wall):  # wall open
                             came_from[(nx, ny)] = (cx, cy)
                             queue.append((nx, ny))
         return "".join(reversed(solution_path))
 
-    def path_to_cells(self, path: LiteralString, entry: Any) -> list[tuple[Any, Any]]:
+    def path_to_cells(self, path: LiteralString,
+                      entry: Any) -> list[tuple[Any, Any]]:
         x = self.start_x
         y = self.start_y
         cells = [(x, y)]  # start with entry cell
