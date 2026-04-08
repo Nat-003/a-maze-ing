@@ -5,7 +5,7 @@ from mazegen.maze_generator import MazeGenerator
 
 def ui_menu(mg: MazeGenerator, height: Any, width: Any, entry: Any,
             exit_point: Any, output_file: Any) -> None:
-    COLORS = ["\033[37m", "\033[32m", "\033[33m", "\033[34m", "\033[36m"]
+    COLORS = ["\033[37m", "\033[32m", "\033[93m", "\033[34m", "\033[36m"]
     grid = mg.grid
     cell: list[Any] = []
     path = mg.solve()
