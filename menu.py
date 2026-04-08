@@ -25,8 +25,8 @@ def ui_menu(mg: MazeGenerator, height: Any, width: Any, entry: Any,
             if user_choice == 1:
                 mg.generate()
                 grid = mg.grid
-                show_path = False  # ← reset toggle
-                cell = []          # ← clear path cells
+                show_path = False
+                cell = []
                 path = mg.solve()
                 mg.write_output(entry, exit_point, path, output_file)
                 print("\033c", end="")
