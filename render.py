@@ -11,36 +11,36 @@ def render_maze(height: Any, width: Any, grid: Any, entry: Any,
         pattern_cells = []
     entry_x, entry_y = entry
     exit_x, exit_y = exit_point
-    ENTRY = "\033[45m"   # magenta BACKGROUND
-    EXIT = "\033[41m"   # red BACKGROUND
+    ENTRY = "\033[45m"
+    EXIT = "\033[41m"
     RESET = "\033[0m"
-    PATH = "\033[43m"   # yellow background
-    PATTERN = "\033[45m"  # magenta background
+    PATH = "\033[43m"
+    PATTERN = "\033[45m"
     for char_y in range(height * 2 + 1):
         for char_x in range(width * 2 + 1):
             cell_x = char_x // 2
             cell_y = char_y // 2
             if char_x % 2 == 0 and char_y % 2 == 0:
                 print(f'{wall_color}█{RESET}', end='')
-            elif char_x % 2 != 0 and char_y % 2 == 0:  # horizontal wall
+            elif char_x % 2 != 0 and char_y % 2 == 0:
                 if cell_y >= height or (grid[cell_y][cell_x] & 1):
                     print(f'{wall_color}██{RESET}', end='')
                 else:
                     print('  ', end='')
-            elif char_x % 2 == 0 and char_y % 2 != 0:  # vertical wall
+            elif char_x % 2 == 0 and char_y % 2 != 0:
                 if cell_x >= width or (grid[cell_y][cell_x] & 8):
                     print(f'{wall_color}█{RESET}', end='')
                 else:
                     print(' ', end='')
             else:  # interior
                 if entry_x == cell_x and entry_y == cell_y:
-                    print(f"{ENTRY}  {RESET}", end='')  # use EE to see it
+                    print(f"{ENTRY}  {RESET}", end='')
                 elif exit_x == cell_x and exit_y == cell_y:
-                    print(f"{EXIT}  {RESET}", end='')   # use XX to see it
+                    print(f"{EXIT}  {RESET}", end='')
                 elif (cell_x, cell_y) in path_cells:
                     print(f"{PATH}  {RESET}", end='')
                 elif (cell_x, cell_y) in pattern_cells:
                     print(f'{PATTERN}  {RESET}', end='')
                 else:
                     print('  ', end='')
-        print()  # newline at end of each row
+        print()
