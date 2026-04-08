@@ -142,7 +142,7 @@ class MazeGenerator:
             new_config.update({new: value})
         return new_config
 
-    def parse_config(self, filepath: str) -> dict[str, Any]:
+    def parse_config(self, filepath: str) -> dict[str, Any] | None:
         config = {}
         try:
             config = self.get_key(filepath)
@@ -195,33 +195,38 @@ class MazeGenerator:
             return config
         except ValueError as e:
             print(f"{e}")
-            return config
+            return None
 
     def set_config(self) -> None:
         config = self.parse_config(self.file_path)
-        try:
-            self.width = config["WIDTH"]
-            self.height = config["HEIGHT"]
-            self.entry = config["ENTRY"]
-            self.exit_point = config["EXIT"]
-            self.output_file = config["OUTPUT_FILE"]
-            self.perfect = config["PERFECT"]
-        except KeyError:
+        if config is not None:
+            try:
+                self.width = config["WIDTH"]
+                self.height = config["HEIGHT"]
+                self.entry = config["ENTRY"]
+                self.exit_point = config["EXIT"]
+                self.output_file = config["OUTPUT_FILE"]
+                self.perfect = config["PERFECT"]
+            except KeyError:
+                raise ValueError
+            try:
+                self.seed = config["SEED"]
+            except KeyError:
+                self.seed = None
+            self.start_x, self.start_y = self.entry
+            self.generate()
+            if tuple(self.entry) in self.pattern_cell:
+                print("Warning: entry lands on '42' pattern, "
+                    "defaulting to (0,0)")
+                self.start_x, self.start_y = (0, 0)
+                self.generate()
+            if tuple(self.exit_point) in self.pattern_cell:
+                print("Warning: exit lands on '42' pattern, "
+                    "defaulting to (width-1, height-1)")
+                self.exit_point = [self.width-1, self.height-1]
+                self.generate()
+        else:
             raise ValueError
-        try:
-            self.seed = config["SEED"]
-        except KeyError:
-            self.seed = None
-        self.start_x, self.start_y = self.entry
-        self.generate()
-        if tuple(self.entry) in self.pattern_cell:
-            print("Warning: entry lands on '42' pattern, "
-                  "defaulting to (0,0)")
-            self.start_x, self.start_y = (0, 0)
-        if tuple(self.exit_point) in self.pattern_cell:
-            print("Warning: exit lands on '42' pattern, "
-                  "defaulting to (width-1, height-1)")
-            self.exit_point = [self.width-1, self.height-1]
 
     def solve(self) -> LiteralString:
         start_x = self.start_x
