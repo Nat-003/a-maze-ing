@@ -295,13 +295,16 @@ class MazeGenerator:
 
     def write_output(self, entry: Any, exit_point: Any, path: Any,
                      filepath: Any) -> None:
-        with open(filepath, 'w') as f:
-            for row in self.grid:
-                f.write("".join(f"{cell:X}" for cell in row))
+        try:
+            with open(filepath, 'w') as f:
+                for row in self.grid:
+                    f.write("".join(f"{cell:X}" for cell in row))
+                    f.write("\n")
                 f.write("\n")
-            f.write("\n")
-            x, y = entry
-            ex, ey = exit_point
-            f.write(f"{x},{y}\n")
-            f.write(f"{ex},{ey}\n")
-            f.write(f"{path}\n")
+                x, y = entry
+                ex, ey = exit_point
+                f.write(f"{x},{y}\n")
+                f.write(f"{ex},{ey}\n")
+                f.write(f"{path}\n")
+        except FileNotFoundError:
+            raise ValueError("No file provided")
