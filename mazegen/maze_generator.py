@@ -248,6 +248,8 @@ class MazeGenerator:
                     try:
                         new_value = []
                         tmp = value.split(',')
+                        if len(tmp) != 2:
+                            raise ValueError
                         for v in tmp:
                             casted = int(v)
                             new_value.append(casted)
@@ -275,18 +277,13 @@ class MazeGenerator:
             exit_x, exit_y = exit_point
             if (entry_x < 0 or entry_x >= width or entry_y < 0
                     or entry_y >= height):
-                print(f"Warning: Entry coordinates({entry_x},{entry_y}) "
-                      "out of "
-                      f"bounds for maze ({width},{height}) "
-                      "defaulting to (0,0)")
-                config["ENTRY"] = (0, 0)
+                raise ValueError("Warning: Entry coordinates"
+                                 f"({entry_x},{entry_y}) ")
             elif (exit_x < 0 or exit_x >= width or exit_y < 0
                   or exit_y >= height):
-                print(f"Warning: Exit coordinates({exit_x},{exit_y}) "
-                      "out of bounds"
-                      f" for maze ({width},{height}) defaulting to "
-                      f"({width-1},{height-1})")
-                config["EXIT"] = (width-1, height-1)
+                raise ValueError("Warning: Exit coordinates"
+                                 f"({exit_x},{exit_y})"
+                      "out of bounds")
             return config
         except ValueError as e:
             print(f"{e}")
@@ -312,23 +309,13 @@ class MazeGenerator:
                 self.perfect = config["PERFECT"]
             except KeyError:
                 raise ValueError
-            try:
-                self.seed = config["SEED"]
-            except KeyError:
-                self.seed = None
+            self.seed = config.get("SEED", None)
             self.start_x, self.start_y = self.entry
             self.generate()
             if tuple(self.entry) in self.pattern_cell:
-                print("Warning: entry lands on '42' pattern, "
-                      "defaulting to (0,0)")
-                self.start_x, self.start_y = (0, 0)
-                self.entry = self.start_x, self.start_y
-                self.generate()
+                raise ValueError("Warning: entry lands on '42' pattern")
             if tuple(self.exit_point) in self.pattern_cell:
-                print("Warning: exit lands on '42' pattern, "
-                      "defaulting to (width-1, height-1)")
-                self.exit_point = [self.width-1, self.height-1]
-                self.generate()
+                raise ValueError("Warning: exit lands on '42' pattern")
         else:
             raise ValueError
 
@@ -371,8 +358,8 @@ class MazeGenerator:
             for dx, dy, wall in [(0, -1, 1), (1, 0, 2), (0, 1, 4), (-1, 0, 8)]:
                 nx, ny = cx + dx, cy + dy
                 if 0 <= nx < len(self.grid[0]) and 0 <= ny < len(self.grid):
-                    if (nx, ny) not in came_from:  # not visited
-                        if not (self.grid[cy][cx] & wall):  # wall open
+                    if (nx, ny) not in came_from:
+                        if not (self.grid[cy][cx] & wall):
                             came_from[(nx, ny)] = (cx, cy)
                             queue.append((nx, ny))
         return "".join(reversed(solution_path))
@@ -391,7 +378,7 @@ class MazeGenerator:
         """
         x = self.start_x
         y = self.start_y
-        cells = [(x, y)]  # start with entry cell
+        cells = [(x, y)]
         for direction in path:
             if direction == 'N':
                 y -= 1
