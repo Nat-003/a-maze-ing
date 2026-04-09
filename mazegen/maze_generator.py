@@ -311,6 +311,9 @@ class MazeGenerator:
                 raise ValueError
             self.seed = config.get("SEED", None)
             self.start_x, self.start_y = self.entry
+            if self.entry == self.exit_point:
+                raise ValueError("Warning: entry and exit can't be "
+                                 "on the same cell")
             self.generate()
             if tuple(self.entry) in self.pattern_cell:
                 raise ValueError("Warning: entry lands on '42' pattern")
